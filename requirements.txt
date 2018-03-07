@@ -1,0 +1,4 @@
+PyMySQL==0.7.*
+celery==4.1.*
+networkx==2.0
+sqlalchemy-json==0.2.1
