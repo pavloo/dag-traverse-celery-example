@@ -67,9 +67,6 @@ def run(self, workflow_id, cur_task_id=None):
     else:
         next_task_ids = find_entry_point(graph)
 
-    # Manually set task's state to SUCCESS because when
-    # we get to the next task the task status may not be updated yet
-    # to SUCCESS and the workflow may just stuck
     self.update_state(state=SUCCESS)
 
     for task_id in next_task_ids:

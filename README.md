@@ -1,5 +1,5 @@
 ### About
-This project is an example project that complements a [blog post]() about how to implement a job scheduler for traversing DAG of tasks in Python's [Celery](http://celery.readthedocs.io)
+This project is an example project that complements a blog post about how to implement a job scheduler for traversing DAG of tasks in Python's [Celery](http://celery.readthedocs.io)
 
 ### How to run
 
