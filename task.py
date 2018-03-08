@@ -46,24 +46,24 @@ def _process_task_node(task, uid):
 
     # simulate that task runs
     for i in range(task.sleep):
-        print('Sleep, sec: {}'.format(i))
+        print('{}: Sleep, sec: {}'.format(uid, i))
         time.sleep(1)
 
 @app.task(bind=True)
-def run(self, workflow_id, current_task_id=None):
-    print('Runnning Workflow {} and Task {}'.format(workflow_id, current_task_id))
+def run(self, workflow_id, cur_task_id=None):
+    print('Runnning Workflow {} and Task {}'.format(workflow_id, cur_task_id))
     workflow = session.query(Workflow).filter_by(id=workflow_id).one()
     graph = workflow.execution_graph
 
     next_task_ids = []
-    if current_task_id:
-        task = session.query(Task).get(current_task_id)
+    if cur_task_id:
+        task = session.query(Task).get(cur_task_id)
         if not _is_node_rdy(task, graph):
             return
 
         _process_task_node(task, self.request.id)
 
-        next_task_ids = list(graph.successors(current_task_id))
+        next_task_ids = list(graph.successors(cur_task_id))
     else:
         next_task_ids = find_entry_point(graph)
 

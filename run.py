@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from .conf import DATABASE_URI, QUEUE_NAME
 from .task import run
+import random
 
 engine = create_engine(DATABASE_URI)
 
@@ -14,14 +15,19 @@ CeleryTask.__table__.drop(engine)
 CeleryTask.__table__.create(engine, checkfirst=True)
 Base.metadata.create_all(engine)
 
-for i in range(4):
-    session.add(Task(sleep=(i + 1)))
+for i in range(8):
+    session.add(Task(sleep=random.randint(1, 7))) # sleep for 1-7 secs
 
 session.add(
     Workflow(
         dag_adjacency_list = dict([
-            (1, [2]),
-            (2, [3])
+            (1, [3]),
+            (2, [4]),
+            (3, [5]),
+            (4, [5]),
+            (5, [6, 7]),
+            (6, [8]),
+            (7, [8])
         ])
     )
 )
