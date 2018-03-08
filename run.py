@@ -1,8 +1,10 @@
 from .models import Workflow, Task, CeleryTask, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from .conf import DATABASE_URI, QUEUE_NAME
+from .task import run
 
-engine = create_engine('mysql+pymysql://root:@localhost/dag_celery?charset=utf8mb4')
+engine = create_engine(DATABASE_URI)
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -12,8 +14,8 @@ CeleryTask.__table__.drop(engine)
 CeleryTask.__table__.create(engine, checkfirst=True)
 Base.metadata.create_all(engine)
 
-for _ in range(4):
-    session.add(Task())
+for i in range(4):
+    session.add(Task(sleep=(i + 1)))
 
 session.add(
     Workflow(
@@ -26,4 +28,9 @@ session.add(
 
 session.commit()
 
-session.query(Workflow).all()[0].execution_graph.nodes
+workflow = session.query(Workflow).first()
+
+run.apply_async(
+    args=(workflow.id,),
+    queue=QUEUE_NAME
+)

@@ -1,7 +1,7 @@
 from celery.backends.database.models import Task as CeleryTask
 import networkx as nx
 from networkx.algorithms.dag import is_directed_acyclic_graph
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_json import MutableJson
@@ -30,6 +30,5 @@ class Workflow(Base):
 class Task(Base):
     __tablename__ = 'task'
     id = Column(Integer, primary_key=True)
-    celery_task_id = Column(Integer, ForeignKey(CeleryTask.id))
-    celery_task = relationship(CeleryTask)
+    celery_task_uid = Column(String(100))
     sleep = Column(Integer)
